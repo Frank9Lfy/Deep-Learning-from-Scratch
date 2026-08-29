@@ -1,0 +1,55 @@
+import numpy as np
+# 标量可看作零维数组
+print('='*15,"向量（一维数组）",'='*20)
+x = np.array([1,2,3,4,5])
+print(x)
+print(type(x))
+y = np.array([2.0,2.0,3.0,4.0,5.0])
+z = np.array([1,2,3,4])
+#运算：逐项相~
+try:
+    print(x+z)
+except(ValueError):
+    print("x,z元素个数不一致，无法相运算")
+print(x+y)
+print(x-y)
+print(x*y)
+print(x/y)
+print(x//y)
+print(x%y)
+print(x**y)
+print(x/2.0)
+print('='*15,"矩阵",'='*20)
+A = np.array([[1,2],[3,4],[5,6]])
+print(A)
+print(A.shape)
+# B = np.array([[3,0],[0,6]])
+# print(A*B)
+# ValueError: operands could not be broadcast together with shapes (3,2) (2,2)
+# ValueError: operands could not be broadcast together with shapes (3,2) (3,3)
+A = np.array([[1,2],[3,4]])
+B = np.array([[3,0],[0,6]])
+print(A)
+print(A+B)
+print(A*B)
+print(A*10)
+print('='*15,"广播：形状不同的数组之间也可以运算",'='*20)
+C = np.array([10,20]) #向量
+print(A*C)
+print(A+C)
+print("本质：较低维的C被扩展成和A相同的形状")
+print('='*15,"访问元素",'='*20)
+print("C[0]:",C[0])
+print("A[1]:",A[1])
+print("A[0][1]:",A[0][1])
+for x in A:
+    print(x,"row")
+for(x,y) in zip(A,B):
+    print(x+y,y)
+X = A.flatten() #拉成一维数组
+print(X)
+print(X[np.array([0,2,3])])
+print(A[np.array([0,1])])
+print(X>2)  # 获取满足一定条件的元素（数组形式）
+print(X[X>2])
+print(A[A>1])
