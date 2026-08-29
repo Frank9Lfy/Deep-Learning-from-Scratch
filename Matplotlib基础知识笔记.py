@@ -15,7 +15,7 @@ plt.plot(x,y2,linestyle ="--", label ="cos")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title('sin&cos')
-plt.legend()
+plt.legend()  # 添加图例说明框
 plt.show()
 print('='*15,"显示图像",'='*20)
 

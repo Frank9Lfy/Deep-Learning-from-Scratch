@@ -27,7 +27,7 @@ def AND2(x1,x2):
     x_ = np.array([x1,x2])
     w_ = np.array([0.5,0.5])
     b_ = -0.7
-    tmp = np.sum(w * x) + b
+    tmp = np.sum(w_ * x_) + b_
     if tmp > 0:
         return 1
     else:
@@ -36,7 +36,7 @@ def NAND(x1,x2):
     x_ = np.array([x1,x2])
     w_ = np.array([-0.5,-0.5]) # 仅权重和偏置与AND不同
     b_ = 0.7
-    tmp = np.sum(w * x) + b
+    tmp = np.sum(w_ * x_) + b_
     if tmp > 0:
         return 1
     else:
@@ -45,9 +45,65 @@ def OR(x1,x2):
     x_ = np.array([x1,x2])
     w_ = np.array([0.5,0.5]) # 仅权重和偏置与AND不同
     b_ = -0.2
-    tmp = np.sum(w * x) + b
+    tmp = np.sum(w_ * x_) + b_
     if tmp > 0:
         return 1
     else:
         return 0
-print('='*15,"异或门的实现：无法直接用感知机（调整参数）实现",'='*20)
+print('='*15,"异或门的实现：无法直接用单层感知机（调整参数）实现",'='*20)
+
+print("感知机的局限性：只能表示由一条直线分割的空间（线性空间）")
+
+# 画一个可视图（LLM辅助代码🐶）
+import matplotlib.pyplot as plt
+# 四个点
+points = {
+    (0, 0): "00",
+    (1, 0): "10",
+    (0, 1): "01",
+    (1, 1): "11"
+}
+
+# 颜色：XOR 的正例是 10, 01；负例是 00, 11
+colors = {
+    (0, 0): "tab:orange",
+    (1, 0): "tab:blue",
+    (0, 1): "tab:blue",
+    (1, 1): "tab:orange",
+}
+fig, ax = plt.subplots(figsize=(6, 6))
+# 画出四个点
+for (x, y), label in points.items():
+    ax.scatter(x, y, s=120, c=colors[(x, y)], edgecolors="black", zorder=3)
+    ax.annotate(label, (x, y), textcoords="offset points", xytext=(8, 8),
+                fontsize=12, fontweight="bold")
+
+# 画一条“尝试分割”的直线（仅用于说明无法分开）
+x = np.linspace(-0.2, 1.5, 100)
+y = -x + 0.5
+ax.plot(x, y, "k--", linewidth=2, label="division line")
+
+# 坐标轴设置
+ax.set_xlim(-0.2, 1.2)
+ax.set_ylim(-0.2, 1.2)
+ax.set_xticks([0, 1])
+ax.set_yticks([0, 1])
+ax.set_xlabel("x1")
+ax.set_ylabel("x2")
+ax.grid(True, linestyle=":", alpha=0.5)
+ax.set_title("XOR Problem: Not Linearly Separable")
+ax.legend()
+plt.show()
+
+def XOR(x1, x2):
+    s1 = NAND(x1,x2)
+    s2 = OR(x1,x2)
+    y0 = AND0(s1,s2)
+    return y0
+print("XOR(0,0):",XOR(0,0))
+print("XOR(0,1):",XOR(0,1))
+print("XOR(1,1):",XOR(1,1))
+print("""异或门是二层感知机
+总共由三层组成，拥有权重的只有2层（两个“之间”）
+单层感知机之间表示线性空间，多层感知机可表示非线性空间
+""")
