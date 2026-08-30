@@ -1,3 +1,5 @@
+"https://chat.deepseek.com/share/r462vk3tc2g6s85epq"
+"这是向DeepSeek问到的感知机的起源与理解"
 print('='*15,"先用感知机做一个与门",'='*20)
 def AND0(x1,x2):
     return x1&x2
