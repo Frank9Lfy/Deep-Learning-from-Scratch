@@ -3,3 +3,46 @@
 /workspace.xml
 # 基于编辑器的 HTTP 客户端请求
 /httpRequests/
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# virtual envs
+.env
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints
+
+# testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs / editors
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains / PyCharm — 忽略整个 .idea 和 .iml 文件
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Logs / temp
+*.log
+tmp/
