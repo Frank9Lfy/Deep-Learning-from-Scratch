@@ -73,3 +73,78 @@ Y = np.dot(X,W)
 print(Y)
 
 print('='*15,"3层神经网络的实现",'='*20)
+print("A = XW + B")
+print("输入层到第一（隐藏）层")
+X = np.array([1.0, 0.5])
+W1 = np.array([[0.1, 0.3, 0.5],[0.2, 0.4, 0.6]])
+B1 = np.array([0.1, 0.2, 0.3])
+A1 = np.dot(X,W1) + B1
+Z1 = sigmoid(A1)  # 使用上文定义的sigmoid函数
+print("A1:",A1)
+print("Z1:",Z1)
+print("第一层到第二层（隐藏层）")
+W2 = np.array([[0.1, 0.4],[0.2, 0.5],[0.3, 0.6]])
+B2 = np.array([0.1, 0.2])
+A2 = np.dot(Z1,W2) + B2
+Z2 = sigmoid(A2)
+print("A2:",A2)
+print("Z2:",Z2)
+print("第二层到输出层")
+def identity_function(x):
+    return x
+W3 = np.array([[0.1, 0.3],[0.2, 0.4]])
+B3 = np.array([0.1, 0.2])
+A3 = np.dot(Z2,W3) + B3
+Y = identity_function(A3)  # 使用恒等函数作为输出层的激活函数
+print("A3:",A3)
+print("Y:",Y)
+print("""一般来说，输出层的激活函数是恒等函数（回归问题）
+或softmax函数（分类问题） 见下文输出层的设计""")
+print("整理三层神经网络代码成函数形式")
+# 为了防止函数中使用的变量被外部同名变量覆盖，必须小写
+def init_network():
+    network = {}
+    network['w1'] = np.array([[0.1, 0.3, 0.5],[0.2, 0.4, 0.6]])
+    network['b1'] = np.array([0.1, 0.2, 0.3])
+    network['w2'] = np.array([[0.1, 0.4],[0.2, 0.5],[0.3, 0.6]])
+    network['b2'] = np.array([0.1, 0.2])
+    network['w3'] = np.array([[0.1, 0.3],[0.2, 0.4]])
+    network['b3'] = np.array([0.1, 0.2])
+    return network
+def forward(network, x):  # 从输入到输出方向的传递处理，故名为前向
+    w1, w2, w3 = network['w1'], network['w2'], network['w3']  # 多重赋值（使代码简洁） 元组解包
+    b1, b2, b3 = network['b1'], network['b2'], network['b3']
+    a1 = np.dot(x, w1) + b1
+    z1 = sigmoid(a1)
+    a2 = np.dot(z1, w2) + b2
+    z2 = sigmoid(a2)
+    a3 = np.dot(z2, w3) + b3
+    y = identity_function(a3)
+    return y
+network = init_network()
+x = np.array([1.0, 0.5])
+y = forward(network, x)
+print("y:",y)
+
+print('='*15,"输出层的设计",'='*20)
+# https://chat.deepseek.com/share/luf0qnn2nr0u334sj0
+print("分类问题--softmax函数的实现及显示")
+a = np.array([0.3, 2.9, 4.0])
+exp_a = np.exp(a)
+print("exp_a:",exp_a)
+sum_exp_a = np.sum(exp_a)
+print("sum_exp_a:",sum_exp_a)
+print("exp_a/sum_exp_a:",exp_a/sum_exp_a)
+a__1 = np.array([1010, 1000, 990])
+print("exp(a__1):",np.exp(a__1))
+print("exp(a__1)/sum(exp(a__1)):",np.exp(a__1)/np.sum(np.exp(a__1)))
+def softmax(a):
+    c = np.max(a)  # 为了防止溢出，减去最大值
+    exp_a1 = np.exp(a - c)
+    sum_exp_a = np.sum(exp_a1)
+    y_ = exp_a1 / sum_exp_a
+    return y_
+print("softmax(a): ",softmax(np.array([0.3, 2.9, 4.0]))
+      ,"\n总和为1，故可解释为概率分布")
+print("套用函数前后（z和y）各个元素大小的相对关系不变（exp为单调递增函数）")
+print("拓展注意点见书p68-69（3.5.4前后）")
