@@ -28,3 +28,12 @@ def softmax(a):
     sum_exp_a = np.sum(exp_a1)
     y_ = exp_a1 / sum_exp_a
     return y_
+
+# 均方误差（MSE）
+def mean_squared_error(y, t):
+    return 0.5 * np.sum((y-t)**2)
+
+# 交叉熵误差（CEE）
+def cross_entropy_error(y, t):
+    delta = 1e-7  # 防止对数为无穷大
+    return -np.sum(t * np.log(y + delta))  
