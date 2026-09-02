@@ -69,3 +69,11 @@ def numerical_gradient(f, x):
         grad[idx] = (fxh1 - fxh2) / (2*h)  # 中心差分公式计算偏导数
         x[idx] = tmp_val  # 恢复当前元素的值
     return grad
+
+# 梯度下降法
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x
+    for i in range(step_num): # 重复迭代100次
+        grad = numerical_gradient(f, x)  # 计算梯度
+        x -= lr * grad  # 沿着梯度的反方向更新参数
+    return x

@@ -130,3 +130,43 @@ def numerical_gradient(f, x):
     return grad
 print("x0=3, x1=4时的梯度：", numerical_gradient(function_2, np.array([3.0, 4.0])))  # [6. 8.]
 # 梯度可视化（含等高线）见复杂图像.py
+print("="*15,"梯度下降法",'='*20)
+print("""梯度法：沿着梯度的(反)方向更新参数，直到找到最值
+神经网络中，梯度法指梯度下降法，寻找最小值
+""")
+print("梯度下降法的实现")
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x
+    for i in range(step_num): # 重复迭代100次
+        grad = numerical_gradient(f, x)  # 计算梯度
+        x -= lr * grad  # 沿着梯度的反方向更新参数
+    return x
+print("迭代公式：x0 = x0 - lr * ∂f/∂x0\n\t  x1 = x1 - lr * ∂f/∂x1" \
+"\n其中，lr为学习率（即步长）")
+
+"https://chat.deepseek.com/share/vu49hp52i9zo3unoq6"
+"拓展：针对梯度下降法与牛顿迭代法，问deepseek（没有精细化，可追问）"
+# 梯度法求函数f(x0, x1) = x0^2 + x1^2的最小值
+init_x = np.array([-3.0, 4.0])
+print("初始值：", init_x)
+print("最小值：", gradient_descent(function_2, init_x=init_x, lr=0.1, step_num=100)) 
+init_x = np.array([-3.0, 4.0]) 
+print("学习率过大：", gradient_descent(function_2, init_x=init_x, lr=10.0, step_num=100))
+init_x = np.array([-3.0, 4.0])
+print("学习率过小：", gradient_descent(function_2, init_x=init_x, lr=1e-10, step_num=100))
+
+print("\n超参数：学习率lr、迭代次数step_num等参数需要人工设定，称为超参数。超参数需要尝试不同的值，才能找到最优的超参数组合。\n")
+
+print("""神经网络的梯度：损失函数关于权重参数的梯度
+\n""")
+from 工具函数文件 import softmax
+class simpleNet:
+    def __init__(self):
+        self.W = np.random.randn(2, 3)  # 初始化权重，正态分布随机数(高斯分布)，形状为(2,3)
+    def predict(self, x):
+        return np.dot(x, self.W)  # 前向传播，计算输出
+    def loss(self, x, t):
+        z = self.predict(x)  # 预测值
+        y = softmax(z)  # softmax函数，预测值
+        loss = cross_entropy_error(y, t)  # 损失函数
+        return loss
