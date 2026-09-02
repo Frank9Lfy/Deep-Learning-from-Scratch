@@ -6,7 +6,7 @@ from dataset.mnist import load_mnist
 print("学习--是从训练数据中获取到某种规律\n"
 "此处指自动获取最优权重参数的过程")
 
-"https://chat.deepseek.com/share/0vfopa9ovpuuv1ocrc"
+"https://chat.deepseek.com/share/5uzunablzlmh0oj2zl"
 "问deepseek特征量相关知识"
 "在神经网络中，重要的特征量都是机器来学习的，而不是人工来设计的。"
 print('='*15,"损失函数",'='*20)
@@ -76,3 +76,57 @@ y[[0,1,2], [2,5,1]] 取出 [y[0,2], y[1,5], y[2,1]]
 也就是：第 0 个样本的第 2 类概率、第 1 个样本的第 5 类概率、第 2 个样本的第 1 类概率
 结果形状为 (3,)
 '''
+"https://chat.deepseek.com/share/3f95xik388mwgntosn"
+"针对损失函数的设计原因（书p92-93），问deepseek"
+
+print("="*15,"数值微分",'='*20)
+# 导数
+# bad example
+def numerical_diff0(f, x):
+    h = 1e-50  # 过小的h会导致数值误差(舍入误差)
+    return (f(x+h) - f(x)) / h  # 使用的是前向差分，计算结果一定不是该点导数
+print("1e-50:", np.float32(1e-50), "1e-4:", np.float32(1e-4), "1e-5:", np.float32(1e-5))  
+# good example
+def numerical_diff(f, x):
+    h = 1e-4
+    return (f(x+h) - f(x-h)) / (2*h) # 使用的是中心差分，计算结果接近导数
+
+def function_1(x):
+    return 0.01*x**2 + 0.1*x
+
+import matplotlib.pyplot as plt
+x = np.arange(0.0, 20.0, 0.1)
+y = function_1(x)
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.plot(x, y)
+plt.show()
+print("x=5时的导数：", numerical_diff(function_1, 5))  # 0.1999999999990898
+print("x=10时的导数：", numerical_diff(function_1, 10))  # 0.2999999999986347
+# 偏导
+def function_2(x):  # x是一个二维数组,假设x = np.array([x0, x1])
+    return x[0]**2 + x[1]**2
+    # 或者：return np.sum(x**2)  # 也可以使用numpy的广播机制
+# 函数图像见复杂图像.py
+
+print("x0=3, x1=4时,关于x0的偏导数：", numerical_diff(lambda x: function_2(np.array([x, 4])), 3))  # 6.00000000000378
+print("x0=3, x1=4时,关于x1的偏导数：", numerical_diff(lambda x: function_2(np.array([3, x])), 4))  # 7.999999999999119
+'''
+lambda x: function_2(np.array([x, 4]))表示一个匿名函数
+学过c++的同学们，应该很熟悉lambda表达式了🐶
+'''
+# 梯度
+def numerical_gradient(f, x):
+    h = 1e-4
+    grad = np.zeros_like(x)  # 创建一个与x形状相同的数组，元素全为0
+    for idx in range(x.size):  
+        tmp_val = x[idx]  
+        x[idx] = tmp_val + h  # 计算f(x+h)
+        fxh1 = f(x)  # f(x+h)
+        x[idx] = tmp_val - h  # 计算f(x-h)
+        fxh2 = f(x)  # f(x-h)
+        grad[idx] = (fxh1 - fxh2) / (2*h)  # 中心差分公式计算偏导数
+        x[idx] = tmp_val  # 恢复当前元素的值
+    return grad
+print("x0=3, x1=4时的梯度：", numerical_gradient(function_2, np.array([3.0, 4.0])))  # [6. 8.]
+# 梯度可视化（含等高线）见复杂图像.py

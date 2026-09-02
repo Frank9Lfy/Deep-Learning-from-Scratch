@@ -37,3 +37,35 @@ def mean_squared_error(y, t):
 def cross_entropy_error(y, t):
     delta = 1e-7  # 防止对数为无穷大
     return -np.sum(t * np.log(y + delta))  
+# mini-batch版交叉熵误差（CEE）
+def cross_entropy_error_batch1(y, t):  # 监督数据为one-hot编码形式
+    if y.ndim == 1:  # 如果y是一维数组（单个样本）
+        t = t.reshape(1, t.size)  # 将t转换为二维数组
+        y = y.reshape(1, y.size)  # 将y转换为二维数组
+    batch_size = y.shape[0]  # 获取批量大小
+    return -np.sum(t * np.log(y + 1e-7)) / batch_size  # 返回平均交叉熵误差
+def cross_entropy_error_batch2(y, t):  # 监督数据为标签形式
+    if y.ndim == 1:  # 如果y是一维数组（单个样本）
+        t = t.reshape(1, t.size)  # 将t转换为二维数组
+        y = y.reshape(1, y.size)  # 将y转换为二维数组
+    batch_size = y.shape[0]  # 获取批量大小
+    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size  
+
+# 数值微分
+def numerical_diff(f, x):
+    h = 1e-4
+    return (f(x+h) - f(x-h)) / (2*h)
+
+# 梯度
+def numerical_gradient(f, x):
+    h = 1e-4
+    grad = np.zeros_like(x)  # 创建一个与x形状相同的数组，元素全为0
+    for idx in range(x.size):  
+        tmp_val = x[idx]  
+        x[idx] = tmp_val + h  # 计算f(x+h)
+        fxh1 = f(x)  # f(x+h)
+        x[idx] = tmp_val - h  # 计算f(x-h)
+        fxh2 = f(x)  # f(x-h)
+        grad[idx] = (fxh1 - fxh2) / (2*h)  # 中心差分公式计算偏导数
+        x[idx] = tmp_val  # 恢复当前元素的值
+    return grad
