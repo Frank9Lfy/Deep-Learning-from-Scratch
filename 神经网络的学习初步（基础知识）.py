@@ -113,6 +113,8 @@ print("x0=3, x1=4时,关于x0的偏导数：", numerical_diff(lambda x: function
 print("x0=3, x1=4时,关于x1的偏导数：", numerical_diff(lambda x: function_2(np.array([3, x])), 4))  # 7.999999999999119
 '''
 lambda x: function_2(np.array([x, 4]))表示一个匿名函数
+关于Python中匿名函数的语法，问了d老师
+https://chat.deepseek.com/share/7xr06y6q6hiaqhgh1d
 学过c++的同学们，应该很熟悉lambda表达式了🐶
 '''
 # 梯度
@@ -184,5 +186,4 @@ from 工具函数文件 import numerical_gradient
 # 使用的是多维数组的梯度计算！
 dW = numerical_gradient(f, net.W)
 print("dW:\n",dW)
-
 # 求出神经网络的梯度之后，只需根据梯度法，更新权重参数即可

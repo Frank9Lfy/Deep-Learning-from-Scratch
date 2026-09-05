@@ -4,7 +4,7 @@ import numpy as np
 from dataset.mnist import load_mnist
 from PIL import Image
 import pickle
-from 工具文件 import sigmoid, softmax
+from 工具函数文件 import sigmoid, softmax
 
 def img_show(img):
     pil_img = Image.fromarray(np.uint8(img))
@@ -120,5 +120,5 @@ for i in range(0, len(x_train2), batch_size):
     # print("t_train2[i:i+batch_size].shape:", t_train2[i:i+batch_size].shape)
     # print("p:", p)
     accuracy_cnt += np.sum(p == t_train2[i:i+batch_size])  #统计预测正确的样本数
-print("Accuracy:" + str(float(accuracy_cnt) / len(x_train2)))
+print("Accuracy:" + str(float(accuracy_cnt) / len(x_train2)))  # len为Python内置函数，此处也可用x_train2[0](NumPy专用)
 print("说明：必须使用一致的训练集或测试集（因为他们的大小不同），否则数组可能为空，报错。")
