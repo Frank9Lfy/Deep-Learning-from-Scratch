@@ -116,7 +116,7 @@ lambda x: function_2(np.array([x, 4]))表示一个匿名函数
 学过c++的同学们，应该很熟悉lambda表达式了🐶
 '''
 # 梯度
-def numerical_gradient(f, x):
+def numerical_gradient0(f, x):
     h = 1e-4
     grad = np.zeros_like(x)  # 创建一个与x形状相同的数组，元素全为0
     for idx in range(x.size):  
@@ -128,7 +128,7 @@ def numerical_gradient(f, x):
         grad[idx] = (fxh1 - fxh2) / (2*h)  # 中心差分公式计算偏导数
         x[idx] = tmp_val  # 恢复当前元素的值
     return grad
-print("x0=3, x1=4时的梯度：", numerical_gradient(function_2, np.array([3.0, 4.0])))  # [6. 8.]
+print("x0=3, x1=4时的梯度：", numerical_gradient0(function_2, np.array([3.0, 4.0])))  # [6. 8.]
 # 梯度可视化（含等高线）见复杂图像.py
 print("="*15,"梯度下降法",'='*20)
 print("""梯度法：沿着梯度的(反)方向更新参数，直到找到最值
@@ -138,7 +138,7 @@ print("梯度下降法的实现")
 def gradient_descent(f, init_x, lr=0.01, step_num=100):
     x = init_x
     for i in range(step_num): # 重复迭代100次
-        grad = numerical_gradient(f, x)  # 计算梯度
+        grad = numerical_gradient0(f, x)  # 计算梯度
         x -= lr * grad  # 沿着梯度的反方向更新参数
     return x
 print("迭代公式：x0 = x0 - lr * ∂f/∂x0\n\t  x1 = x1 - lr * ∂f/∂x1" \
@@ -157,16 +157,32 @@ print("学习率过小：", gradient_descent(function_2, init_x=init_x, lr=1e-10
 
 print("\n超参数：学习率lr、迭代次数step_num等参数需要人工设定，称为超参数。超参数需要尝试不同的值，才能找到最优的超参数组合。\n")
 
-print("""神经网络的梯度：损失函数关于权重参数的梯度
-\n""")
+print("""神经网络的梯度：损失函数关于权重参数W(矩阵)的梯度""")
 from 工具函数文件 import softmax
 class simpleNet:
     def __init__(self):
         self.W = np.random.randn(2, 3)  # 初始化权重，正态分布随机数(高斯分布)，形状为(2,3)
-    def predict(self, x):
-        return np.dot(x, self.W)  # 前向传播，计算输出
-    def loss(self, x, t):
-        z = self.predict(x)  # 预测值
-        y = softmax(z)  # softmax函数，预测值
-        loss = cross_entropy_error(y, t)  # 损失函数
+    def predict(self, x1):
+        return np.dot(x1, self.W)  # 前向传播，计算输出
+    def loss(self, x1, t):
+        z = self.predict(x1)  # 预测值
+        y0 = softmax(z)  # softmax函数，预测值
+        loss = cross_entropy_error(y0, t)  # 损失函数
         return loss
+
+net = simpleNet()
+print("net.W:\n",net.W) # 权重参数
+x = np.array([0.6, 0.9])
+p = net.predict(x)
+print(p)
+print(np.argmax(p))  #最大值的索引
+t = np.array([0,0,1]) # 正确解标签
+print(net.loss(x, t))
+
+f = lambda w: net.loss(x, t)
+from 工具函数文件 import numerical_gradient
+# 使用的是多维数组的梯度计算！
+dW = numerical_gradient(f, net.W)
+print("dW:\n",dW)
+
+# 求出神经网络的梯度之后，只需根据梯度法，更新权重参数即可
