@@ -104,7 +104,7 @@ colors = {
     (0, 1): "tab:blue",
     (1, 1): "tab:orange",
 }
-a = input("是否绘制XOR线性不可分问题的可视化图？(y/n):")
+a = input("是否绘制XOR线性不可分问题的可视化图？(若是，请敲字母y):")
 if a == "y":
     fig, ax = plt.subplots(figsize=(6, 6))
     # 画出四个点
@@ -129,4 +129,76 @@ if a == "y":
     ax.set_title("XOR Problem: Not Linearly Separable")
     ax.legend()
     plt.show()
+
+print('='*15,"计算图",'='*20)
+
+
+import matplotlib.patches as mpatches
+from matplotlib.patches import FancyArrowPatch, Circle
+
+fig, ax = plt.subplots(figsize=(13.5, 6.5))
+ax.set_xlim(-0.2, 14); ax.set_ylim(0.6, 7.4); ax.axis('off')
+
+C_NODE, C_LEAF, C_INTER, C_OUT = '#4C9BE8', '#8BC34A', '#FFB74D', '#EF5350'
+C_FWD, C_BWD = '#1B5E20', '#B71C1C'
+
+def node(x, y, r, color, text, fs=11):
+    ax.add_patch(Circle((x, y), r, facecolor=color, edgecolor='black', lw=1.5, zorder=3))
+    ax.text(x, y, text, ha='center', va='center', fontsize=fs,
+            color='white', fontweight='bold', zorder=4)
+
+def seg(p1, p2, color, style='-|>', ls='-'):
+    ax.add_patch(FancyArrowPatch(p1, p2, arrowstyle=style, mutation_scale=16,
+                                 color=color, lw=2.4, linestyle=ls, zorder=2))
+
+def lab(x, y, text, color, fs=10.5, boxed=False):
+    kw = dict(fontsize=fs, color=color, fontweight='bold',
+              ha='center', va='center', zorder=6)
+    if boxed:
+        kw['bbox'] = dict(boxstyle='round,pad=0.22', fc='white', ec=color, lw=1)
+    ax.text(x, y, text, **kw)
+
+Y, YB = 3.3, 6.2   # 正向主链 / 反向回流线
+
+# 节点（只画一次）
+node(1.6, Y+1.3, 0.62, C_LEAF,  'apple\n100')
+node(1.6, Y-1.3, 0.68, C_LEAF,  'apple_num\n2')
+node(4.0, Y, 0.55, C_NODE,  '×')
+node(6.6, Y, 0.80, C_INTER, 'apple_price\n220')
+node(9.0, Y, 0.55, C_NODE,  '×')
+node(9.0, 1.1, 0.62, C_LEAF,  'tax\n1.1')
+node(11.6, Y, 0.72, C_OUT,  'price\n242')
+
+# 正向：绿色连续箭头
+seg((2.2, Y+1.1), (3.5, Y+0.3), C_FWD)
+seg((2.25, Y-1.05), (3.5, Y-0.3), C_FWD)
+seg((4.55, Y), (5.75, Y), C_FWD)
+seg((7.42, Y), (8.42, Y), C_FWD)
+seg((9.0, 1.75), (9.0, 2.72), C_FWD)
+seg((9.55, Y), (10.85, Y), C_FWD)
+lab(2.6, Y+1.15, '100', C_FWD); lab(2.5, Y-0.8, '2', C_FWD)
+lab(5.15, Y+0.45, '220', C_FWD); lab(9.45, 2.15, '1.1', C_FWD)
+lab(10.2, Y+0.45, '242', C_FWD)
+
+# 反向：红色连续回流线
+seg((11.6, Y+0.75), (11.6, YB), C_BWD, style='-[')      # price 汇入
+lab(12.55, Y+1.35, 'dprice = 1', C_BWD, fs=9.5, boxed=True)
+seg((11.6, YB), (9.55, YB), C_BWD)                      # 回流段 1
+seg((8.45, YB), (4.55, YB), C_BWD)                      # 回流段 2
+lab(10.55, YB+0.35, '1', C_BWD); lab(6.6, YB+0.35, '1.1', C_BWD)
+seg((9.0, YB), (9.0, YB-0.5), C_BWD, style='-[')        # 分流 → tax
+lab(9.0, YB-0.9, 'dtax = 220', C_BWD, fs=9.5, boxed=True)
+seg((4.0, YB), (1.6, YB), C_BWD)                        # 分流 → apple
+seg((1.6, YB), (1.6, Y+2.0), C_BWD, style='-[')
+lab(2.8, YB+0.35, '2.2', C_BWD)
+lab(0.55, Y+2.35, 'dapple = 2.2', C_BWD, fs=9.5, boxed=True)
+seg((3.3, YB), (3.3, Y-1.15), C_BWD)                    # 分流 → apple_num
+seg((3.3, Y-1.3), (2.32, Y-1.3), C_BWD, style='-[')
+lab(3.62, Y-0.75, '110', C_BWD)
+lab(4.15, Y-1.85, 'dapple_num = 110', C_BWD, fs=9.5, boxed=True)
+#, ha='left' ？多余参数
+ax.legend(handles=[mpatches.Patch(color=C_FWD, label='Forward 正向传播'),
+                   mpatches.Patch(color=C_BWD, label='Backward 反向传播')],
+          loc='lower left', fontsize=9.5)
+plt.tight_layout(); plt.show()
 
