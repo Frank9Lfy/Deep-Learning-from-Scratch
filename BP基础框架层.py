@@ -108,3 +108,56 @@ print('='*15,"Affine层的实现",'='*20)
 # Affine :全链接层
 print("简单理解Affine层： 见手写数字识别推理处理部分（前向传播）的predict函数"
       "\n这里增加了backward")
+"数学推导见  https://chat.deepseek.com/share/b0nxigacakzuh1y7tb"
+"实际只要记住维度对应即可"
+
+# 理解偏置的计算
+X_dot_W = np.array([[0,0,0],[10,10,10]])
+B = np.array([1,2,3])
+print(X_dot_W)
+print("X_dot_W+B:\n",X_dot_W+B)  # 广播
+dY = np.array([[1,2,3],[4,5,6]])
+print("dY:\n",dY)
+dB = np.sum(dY,axis=0)  # 注意求和结果
+print("dB:",dB)
+
+class Affine:  # 假设x<=2维
+    def __init__(self,W,b):
+        self.W = W
+        self.b = b
+        self.x = None
+        self.dW = None
+        self.db = None
+
+    def forward(self,x):
+        self.x = x
+        out = np.dot(x,self.W) + self.b
+        return out
+    def backward(self,dout):
+        dx = np.dout(dout,self.W.T)
+        dW = np.dout(self.x.T,dout)
+        db = np.sum(dout,axis=0)
+        return dx
+
+print('='*15,"Softmax-with-Loss层的实现",'='*20)
+"""
+为了反向传播得到漂亮的结果(y1-t1,y2-t2,y3-t3,  ),
+为softmax特意设计了交叉熵误差函数？！
+回归问题中输出层使用恒等函数，损失函数使用平方和误差，也是同样的效果
+"""
+from 工具函数文件 import *
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.y = None
+        self.loss = None
+        self.t = None  #(one-hot vector)
+    def forward(self,x,t):
+        self.t = t
+        self.y = softmax(x)
+        self.loss = cross_entropy_error(self.y, self.t)
+        return self.loss
+    def backward(self,dout=1):
+
+        batch_size = self.t.shape[0]
+        dx = (self.y - self.t) / batch_size
+        return dx

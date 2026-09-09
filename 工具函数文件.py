@@ -22,12 +22,21 @@ def sigmoid(x):
 def relu(x):
     return np.maximum(0, x)
 # softmax函数
-def softmax(a):
-    c = np.max(a)  # 为了防止溢出，减去最大值
-    exp_a1 = np.exp(a - c)
-    sum_exp_a = np.sum(exp_a1)
-    y_ = exp_a1 / sum_exp_a
-    return y_
+# def softmax(a):
+#     c = np.max(a)  # 为了防止溢出，减去最大值
+#     exp_a1 = np.exp(a - c)
+#     sum_exp_a = np.sum(exp_a1)
+#     y_ = exp_a1 / sum_exp_a
+#     return y_
+def softmax(x):
+    if x.ndim == 2:
+        x = x.T
+        x = x - np.max(x, axis=0)
+        y = np.exp(x) / np.sum(np.exp(x), axis=0)
+        return y.T
+
+    x = x - np.max(x) # 溢出对策
+    return np.exp(x) / np.sum(np.exp(x))
 
 # 均方误差（MSE）
 def mean_squared_error(y, t):
@@ -50,6 +59,19 @@ def cross_entropy_error_batch2(y, t):  # 监督数据为标签形式
         y = y.reshape(1, y.size)  # 将y转换为二维数组
     batch_size = y.shape[0]  # 获取批量大小
     return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size  
+
+def cross_entropy_error_batch(y, t):
+    if y.ndim == 1:  # 如果y是一维数组（单个样本）
+        t = t.reshape(1, t.size)  # 将t转换为二维数组
+        y = y.reshape(1, y.size)  # 将y转换为二维数组
+
+    # 监督数据是one-hot-vector的情况下，转换为正确解标签的索引
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+
+    batch_size = y.shape[0]  # 获取批量大小
+    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+
 
 # 数值微分
 def numerical_diff(f, x):

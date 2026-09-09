@@ -108,7 +108,7 @@ for i in range(iters_num):
     # 计算梯度
     grad = network.numerical_gradient(x_batch,t_batch)
     # print(grad.keys())
-    for key in ('W1','b1','W1','b2'):
+    for key in ('W1','b1','W2','b2'):
         network.params[key] -= learning_rate * grad[key]
     # 记录学习过程
     loss = network.loss(x_batch,t_batch)
