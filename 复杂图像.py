@@ -12,6 +12,7 @@ X, Y = np.meshgrid(x0, x1)
 
 # 计算 z = x0^2 + x1^2
 Z = X**2 + Y**2
+Z2 = X**2/20 + Y**2
 
 # 绘图
 fig = plt.figure(figsize=(8, 6))
@@ -22,6 +23,15 @@ ax.set_xlabel('x0')
 ax.set_ylabel('x1')
 ax.set_zlabel('z')
 ax.set_title('z = x0^2 + x1^2')
+
+plt.show()
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X, Y, Z2, cmap='viridis', edgecolor='none')
+ax.set_xlabel('x0')
+ax.set_ylabel('x1')
+ax.set_zlabel('z2')
+ax.set_title('非均向图')
 
 plt.show()
 

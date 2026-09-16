@@ -30,7 +30,7 @@ iter_per_epoch = max(train_size // batch_size,1)
 print("iter_per_epoch:",iter_per_epoch)
 
 for i in range(iters_num):
-    # 获取mini-batch
+    # 获取mini-batch（随机抽取）
     batch_mask = np.random.choice(train_size,batch_size)
     x_batch = x_train[batch_mask]
     t_batch = t_train[batch_mask]
